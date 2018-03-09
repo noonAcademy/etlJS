@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/noonEng/etlJS.svg?branch=feat%2FlocalStorage-support)](https://travis-ci.org/noonEng/etlJS)
 # etlJS
 The ETL capturing framework for web
 
