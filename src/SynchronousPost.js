@@ -2,6 +2,8 @@ import axios from 'axios'
 import store from 'store'
 const R = require('ramda');
 const etlStoreDataConstant = require('../constants/SynchronousPostConstants').etlDataConstant
+const mainRouteConstant = require('../constants/SynchronousPostConstants').mainRoute
+const flashcardRouteConstant = require('../constants/SynchronousPostConstants').flashcardRoute;
 export default class SynchronousPost {
   constructor() {
     this._name = 'SynchronousPost'
@@ -46,19 +48,36 @@ export default class SynchronousPost {
   postData(url, myData) {
     // Send a POST request
     let postData = { etlData: [] }
+    let postURL;
     postData.etlData = this.getAndRemoveDataFromStore(etlStoreDataConstant) || postData.etlData
+    postURL = mainRouteConstant;
     postData.etlData.push(myData)
-    axios({
-      method: 'post',
-      url: url,
-      data: postData
-    })
-      .then(response => {
-        // Do nothing
+    switch (url) {
+      case 'flashcards':
+        postURL += flashcardRouteConstant
+        break;
+      default:
+        break;
+    }
+    let returnValue;
+    if (postURL === mainRouteConstant) {
+      returnValue = false;
+    } else {
+      axios({
+        method: 'post',
+        url: postURL,
+        data: postData
       })
-      .catch(err => {
-        console.log(err)
-        this.getAndStoreDataToStore(etlStoreDataConstant, postData.etlData)
-      })
+        .then(response => {
+          // Do nothing
+          returnValue = true;
+          return returnValue;
+        })
+        .catch(err => {
+          console.log(err)
+          this.getAndStoreDataToStore(etlStoreDataConstant, postData.etlData)
+          return true;
+        })
+    }
   }
 }
