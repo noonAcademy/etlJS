@@ -1,6 +1,6 @@
 {
   "name": "etljs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "JS framework to caputre ETL data for web applications",
   "main": "lib/etljs.min.js",
   "scripts": {
