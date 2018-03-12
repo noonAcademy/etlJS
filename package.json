@@ -2,7 +2,7 @@
   "name": "etljs",
   "version": "1.0.0",
   "description": "JS framework to caputre ETL data for web applications",
-  "main": "lib/etl.js",
+  "main": "lib/etljs.min.js",
   "scripts": {
     "build": "webpack --env dev && webpack --env build && npm run test",
     "dev": "webpack --progress --colors --watch --env dev",
