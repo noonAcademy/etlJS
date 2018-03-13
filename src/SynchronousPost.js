@@ -1,7 +1,10 @@
 import axios from 'axios'
 import store from 'store'
 const R = require('ramda');
-const etlStoreDataConstant = require('../constants/SynchronousPostConstants').etlDataConstant
+const etlStoreData = require('../constants/SynchronousPostConstants').etlDataConstant
+const baseUrl = require('../constants/SynchronousPostConstants').baseURL
+const singleRecordUrl = require('../constants/SynchronousPostConstants').singleRecordUrl
+const multipleRecordsUrl = require('../constants/SynchronousPostConstants').multipleRecordsUrl
 export default class SynchronousPost {
   constructor() {
     this._name = 'SynchronousPost'
@@ -43,14 +46,21 @@ export default class SynchronousPost {
   removeDataFromStore(value) {
     store.remove(value)
   }
-  postData(url, myData) {
+  postData(myData) {
     // Send a POST request
+    let postUrl = baseUrl
     let postData = { etlData: [] }
-    postData.etlData = this.getAndRemoveDataFromStore(etlStoreDataConstant) || postData.etlData
+    postData.etlData = this.getAndRemoveDataFromStore(etlStoreData) || postData.etlData
     postData.etlData.push(myData)
+    if(postData.etlData.length>1) {
+      postUrl += multipleRecordsUrl
+    } else {
+      postUrl += singleRecordUrl
+    }
     axios({
-      method: 'post',
-      url: url,
+      method: 'PUT',
+      url: postUrl,
+      headers: {'postman-token': '92e2aaea-5a76-5e9a-f05d-e5755c254d80'},
       data: postData
     })
       .then(response => {
@@ -58,7 +68,7 @@ export default class SynchronousPost {
       })
       .catch(err => {
         console.log(err)
-        this.getAndStoreDataToStore(etlStoreDataConstant, postData.etlData)
+        this.getAndStoreDataToStore(etlStoreData, postData.etlData)
       })
   }
 }
