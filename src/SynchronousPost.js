@@ -5,6 +5,7 @@ const etlStoreData = require('../constants/SynchronousPostConstants').etlDataCon
 const baseUrl = require('../constants/SynchronousPostConstants').baseURL
 const singleRecordUrl = require('../constants/SynchronousPostConstants').singleRecordUrl
 const multipleRecordsUrl = require('../constants/SynchronousPostConstants').multipleRecordsUrl
+
 export default class SynchronousPost {
   constructor() {
     this._name = 'SynchronousPost'
@@ -15,6 +16,7 @@ export default class SynchronousPost {
     this.removeDataFromStore = this.removeDataFromStore
     this.getAndStoreDataToStore = this.getAndStoreDataToStore
     this.getExistingStoreDataAndClear = this.getExistingStoreDataAndClear
+    this.getBlankPostDataInstance = this.getBlankPostDataInstance
   }
   get name() {
     return this._name
@@ -37,6 +39,9 @@ export default class SynchronousPost {
     returnData = currentValue ? this.setDataInStore(value, R.concat(this.getDataFromStore(value), data)) : this.setDataInStore(value, data)
     return returnData
   }
+  getBlankPostDataInstance() {
+    return Object.assign({}, { etlData: [] })
+  }
   getDataFromStore(value) {
     return store.get(value)
   }
@@ -49,7 +54,7 @@ export default class SynchronousPost {
   postData(myData) {
     // Send a POST request
     let postUrl = baseUrl
-    let postData = { etlData: [] }
+    let postData = this.getBlankPostDataInstance()
     postData.etlData = this.getAndRemoveDataFromStore(etlStoreData) || postData.etlData
     postData.etlData.push(myData)
     if(postData.etlData.length>1) {
@@ -60,7 +65,6 @@ export default class SynchronousPost {
     axios({
       method: 'PUT',
       url: postUrl,
-      headers: {'postman-token': '92e2aaea-5a76-5e9a-f05d-e5755c254d80'},
       data: postData
     })
       .then(response => {
