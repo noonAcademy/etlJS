@@ -3,6 +3,7 @@
 import chai from 'chai';
 import {SynchronousPost} from '../lib/etljs.js';
 import store from 'store';
+const defualtPartitionKey = require('../constants/SynchronousPostConstants').defualtPartitionKey
 
 chai.expect();
 
@@ -105,6 +106,30 @@ describe('Given an instance of my SynchronousPost library', () => {
       expect(myInstance.getExistingStoreDataAndClear).to.be.a('function');
       expect(myInstance.getExistingStoreDataAndClear('testDataCase4')).to.be.an('array').that.deep.include({mia: 'san mia'});
       expect(myInstance.getDataFromStore('testDataCase4')).to.be.an('undefined');
+    });
+  });
+});
+
+describe('Given an instance of my SynchronousPost library', () => {
+  before(() => {
+    myInstance = new SynchronousPost();
+  });
+  describe('when I need blank post data', () => {
+    it('should return the blank post data', () => {
+      expect(myInstance.getBlankPostDataInstance).to.be.a('function');
+      expect(myInstance.getBlankPostDataInstance()).to.be.an('object').that.deep.include({etlData: []});
+    });
+  });
+});
+
+describe('Given an instance of my SynchronousPost library', () => {
+  before(() => {
+    myInstance = new SynchronousPost();
+  });
+  describe('when I add default parameters', () => {
+    it('should return data with default parameters', () => {
+      expect(myInstance.addDefaultParameters).to.be.a('function');
+      expect(myInstance.addDefaultParameters()).to.be.an('object').that.deep.include({'partition_key': defualtPartitionKey});
     });
   });
 });

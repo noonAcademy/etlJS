@@ -5,6 +5,7 @@ const etlStoreData = require('../constants/SynchronousPostConstants').etlDataCon
 const baseUrl = require('../constants/SynchronousPostConstants').baseURL
 const singleRecordUrl = require('../constants/SynchronousPostConstants').singleRecordUrl
 const multipleRecordsUrl = require('../constants/SynchronousPostConstants').multipleRecordsUrl
+const defualtPartitionKey = require('../constants/SynchronousPostConstants').defualtPartitionKey
 
 export default class SynchronousPost {
   constructor() {
@@ -17,6 +18,7 @@ export default class SynchronousPost {
     this.getAndStoreDataToStore = this.getAndStoreDataToStore
     this.getExistingStoreDataAndClear = this.getExistingStoreDataAndClear
     this.getBlankPostDataInstance = this.getBlankPostDataInstance
+    this.addDefaultParameters = this.addDefaultParameters
   }
   get name() {
     return this._name
@@ -39,6 +41,13 @@ export default class SynchronousPost {
     returnData = currentValue ? this.setDataInStore(value, R.concat(this.getDataFromStore(value), data)) : this.setDataInStore(value, data)
     return returnData
   }
+  addDefaultParameters(postData) {
+    let returnData = Object.assign({}, postData)
+    let myFunc
+    myFunc = R.propOr(defualtPartitionKey, 'partition_key')
+    returnData.partition_key = myFunc(returnData)
+    return returnData
+  }
   getBlankPostDataInstance() {
     return Object.assign({}, { etlData: [] })
   }
@@ -55,6 +64,7 @@ export default class SynchronousPost {
     // Send a POST request
     let postUrl = baseUrl
     let postData = this.getBlankPostDataInstance()
+    myData = this.addDefaultParameters(myData)
     postData.etlData = this.getAndRemoveDataFromStore(etlStoreData) || postData.etlData
     postData.etlData.push(myData)
     if(postData.etlData.length>1) {
