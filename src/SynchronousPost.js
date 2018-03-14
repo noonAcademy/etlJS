@@ -19,6 +19,7 @@ export default class SynchronousPost {
     this.getExistingStoreDataAndClear = this.getExistingStoreDataAndClear
     this.getBlankPostDataInstance = this.getBlankPostDataInstance
     this.addDefaultParameters = this.addDefaultParameters
+    this.unloadHandlingFunction = this.unloadHandlingFunction
   }
   get name() {
     return this._name
@@ -90,5 +91,12 @@ export default class SynchronousPost {
         console.log(err)
         this.getAndStoreDataToStore(etlStoreData, postData.etlData)
       })
+  }
+  unloadHandlingFunction(myData) {
+    let postData = this.getBlankPostDataInstance()
+    myData = this.addDefaultParameters(myData)
+    postData.etlData = this.getAndRemoveDataFromStore(etlStoreData) || postData.etlData
+    postData.etlData.push(myData)
+    this.getAndStoreDataToStore(etlStoreData, postData.etlData)
   }
 }
