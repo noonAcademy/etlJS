@@ -23,5 +23,6 @@ The ETL capturing framework for web
 2. For applications built using webpack: 
 
 # Consume it:
-1. var a = new etljs.SynchronousPost();
+1. Identify your environment('devLocal', 'devAws', 'qa' , or 'prod')
+1. var a = new etljs.SynchronousPost('devLocal');
 2. a.postData(url, {data});
