@@ -1,15 +1,15 @@
 import axios from 'axios'
 import store from 'store'
 const R = require('ramda');
-const etlStoreData = require('../constants/SynchronousPostConstants').etlDataConstant
-const baseUrl = require('../constants/SynchronousPostConstants').baseURL
-const singleRecordUrl = require('../constants/SynchronousPostConstants').singleRecordUrl
-const multipleRecordsUrl = require('../constants/SynchronousPostConstants').multipleRecordsUrl
-const defualtPartitionKey = require('../constants/SynchronousPostConstants').defualtPartitionKey
+const etlStoreDataObject = require('../constants/SynchronousPostConstants').etlDataConstant
+const baseUrlObject = require('../constants/SynchronousPostConstants').baseURL
+const singleRecordUrlObject = require('../constants/SynchronousPostConstants').singleRecordUrl
+const multipleRecordsUrlObject = require('../constants/SynchronousPostConstants').multipleRecordsUrl
+const defualtPartitionKeyObject = require('../constants/SynchronousPostConstants').defualtPartitionKey
 
 export default class SynchronousPost {
-  constructor() {
-    this._name = 'SynchronousPost'
+  constructor(env) {
+    this._env = env
     this.postData = this.postData
     this.getAndRemoveDataFromStore = this.getAndRemoveDataFromStore
     this.getDataFromStore = this.getDataFromStore
@@ -45,7 +45,7 @@ export default class SynchronousPost {
   addDefaultParameters(postData) {
     let returnData = Object.assign({}, postData)
     let myFunc, myDateDefault
-    myFunc = R.propOr(defualtPartitionKey, 'partition_key')
+    myFunc = R.propOr(this.getdefualtPartitionKey(), 'partition_key')
     myDateDefault = R.propOr(new Date(), 'timestamp')
     returnData.partition_key = myFunc(returnData)
     try {
@@ -69,15 +69,15 @@ export default class SynchronousPost {
   }
   postData(myData) {
     // Send a POST request
-    let postUrl = baseUrl
+    let postUrl = this.getbaseUrl()
     let postData = this.getBlankPostDataInstance()
     myData = this.addDefaultParameters(myData)
-    postData.etlData = this.getAndRemoveDataFromStore(etlStoreData) || postData.etlData
+    postData.etlData = this.getAndRemoveDataFromStore(this.getetlStoreData()) || postData.etlData
     postData.etlData.push(myData)
     if(postData.etlData.length>1) {
-      postUrl += multipleRecordsUrl
+      postUrl += this.getmultipleRecordsUrl()
     } else {
-      postUrl += singleRecordUrl
+      postUrl += this.getsingleRecordUrl()
     }
     axios({
       method: 'PUT',
@@ -89,14 +89,29 @@ export default class SynchronousPost {
       })
       .catch(err => {
         console.log(err)
-        this.getAndStoreDataToStore(etlStoreData, postData.etlData)
+        this.getAndStoreDataToStore(this.getetlStoreData(), postData.etlData)
       })
   }
   unloadHandlingFunction(myData) {
     let postData = this.getBlankPostDataInstance()
     myData = this.addDefaultParameters(myData)
-    postData.etlData = this.getAndRemoveDataFromStore(etlStoreData) || postData.etlData
+    postData.etlData = this.getAndRemoveDataFromStore(this.getetlStoreData()) || postData.etlData
     postData.etlData.push(myData)
-    this.getAndStoreDataToStore(etlStoreData, postData.etlData)
+    this.getAndStoreDataToStore(this.getetlStoreData(), postData.etlData)
+  }
+  getetlStoreData() {
+    return etlStoreDataObject[this._env]
+  }
+  getbaseUrl() {
+    return baseUrlObject[this._env]
+  }
+  getsingleRecordUrl() {
+    return singleRecordUrlObject[this._env]
+  }
+  getmultipleRecordsUrl() {
+    return multipleRecordsUrlObject[this._env]
+  }
+  getdefualtPartitionKey() {
+    return defualtPartitionKeyObject[this._env]
   }
 }
