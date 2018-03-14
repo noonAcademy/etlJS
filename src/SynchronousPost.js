@@ -43,9 +43,15 @@ export default class SynchronousPost {
   }
   addDefaultParameters(postData) {
     let returnData = Object.assign({}, postData)
-    let myFunc
+    let myFunc, myDateDefault
     myFunc = R.propOr(defualtPartitionKey, 'partition_key')
+    myDateDefault = R.propOr(new Date(), 'timestamp')
     returnData.partition_key = myFunc(returnData)
+    try {
+      returnData.data.timestamp = myDateDefault(returnData.data)
+    } catch (error) {
+      
+    }
     return returnData
   }
   getBlankPostDataInstance() {
