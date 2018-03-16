@@ -45,18 +45,18 @@ export default class SynchronousPost {
   addDefaultParameters(postData) {
     let returnData = Object.assign({}, postData)
     let myFunc, myDateDefault
-    myFunc = R.propOr(this.getdefualtPartitionKey(), 'partition_key')
+    // myFunc = R.propOr(this.getdefualtPartitionKey(), 'partition_key')
     myDateDefault = R.propOr(new Date(), 'timestamp')
-    returnData.partition_key = myFunc(returnData)
+    // returnData.partition_key = myFunc(returnData)
     try {
-      returnData.data.timestamp = myDateDefault(returnData.data)
+      returnData.timestamp = myDateDefault(returnData)
     } catch (error) {
       
     }
     return returnData
   }
   getBlankPostDataInstance() {
-    return Object.assign({}, { etlData: [] })
+    return Object.assign({}, { records: [] })
   }
   getDataFromStore(value) {
     return store.get(value)
@@ -72,15 +72,15 @@ export default class SynchronousPost {
     let postUrl = this.getbaseUrl()
     let postData = this.getBlankPostDataInstance()
     myData = this.addDefaultParameters(myData)
-    postData.etlData = this.getAndRemoveDataFromStore(this.getetlStoreData()) || postData.etlData
-    postData.etlData.push(myData)
-    if(postData.etlData.length>1) {
+    postData.records = this.getAndRemoveDataFromStore(this.getetlStoreData()) || postData.records
+    postData.records.push(myData)
+    if(postData.records.length>1) {
       postUrl += this.getmultipleRecordsUrl()
     } else {
       postUrl += this.getsingleRecordUrl()
     }
     axios({
-      method: 'PUT',
+      method: 'POST',
       url: postUrl,
       data: postData
     })
@@ -89,15 +89,15 @@ export default class SynchronousPost {
       })
       .catch(err => {
         console.log(err)
-        this.getAndStoreDataToStore(this.getetlStoreData(), postData.etlData)
+        this.getAndStoreDataToStore(this.getetlStoreData(), postData.records)
       })
   }
   unloadHandlingFunction(myData) {
     let postData = this.getBlankPostDataInstance()
     myData = this.addDefaultParameters(myData)
-    postData.etlData = this.getAndRemoveDataFromStore(this.getetlStoreData()) || postData.etlData
-    postData.etlData.push(myData)
-    this.getAndStoreDataToStore(this.getetlStoreData(), postData.etlData)
+    postData.records = this.getAndRemoveDataFromStore(this.getetlStoreData()) || postData.records
+    postData.records.push(myData)
+    this.getAndStoreDataToStore(this.getetlStoreData(), postData.records)
   }
   getetlStoreData() {
     return etlStoreDataObject[this._env]

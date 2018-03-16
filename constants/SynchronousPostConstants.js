@@ -7,13 +7,13 @@ module.exports = {
     },
     baseURL: {
         devLocal: 'http://127.0.0.1:3011/packages/v1',
-        devAws: 'http://127.0.0.1:3011/packages/v1',
+        devAws: 'https://hyyhuwu318.execute-api.us-east-2.amazonaws.com/v1',
         qa: 'http://127.0.0.1:3011/packages/v1',
         prod: 'http://127.0.0.1:3011/packages/v1'
     },
     singleRecordUrl: {
         devLocal: '/etlRoute',
-        devAws: '/etlRoute',
+        devAws: '/event',
         qa: '/etlRouteqa',
         prod: '/etlRoute'
     },
