@@ -80,6 +80,7 @@ export default class SynchronousPost {
       postUrl += this.getsingleRecordUrl()
     }
     axios({
+      headers: {'Access-Control-Allow-Origin': '*'},
       method: 'POST',
       url: postUrl,
       data: postData

@@ -19,7 +19,7 @@ module.exports = {
     },
     multipleRecordsUrl: {
         devLocal: '/etlRoutes',
-        devAws: '/etlRoutes',
+        devAws: '/event',
         qa: '/etlRoutesqa',
         prod: '/etlRoutes'
     },
