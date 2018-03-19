@@ -8,19 +8,19 @@ module.exports = {
     baseURL: {
         devLocal: 'http://127.0.0.1:3011/packages/v1',
         devAws: 'https://hyyhuwu318.execute-api.us-east-2.amazonaws.com/v1',
-        qa: 'http://127.0.0.1:3011/packages/v1',
+        qa: 'https://testapi.non.sa/billing/v1',
         prod: 'http://127.0.0.1:3011/packages/v1'
     },
     singleRecordUrl: {
         devLocal: '/etlRoute',
         devAws: '/event',
-        qa: '/etlRouteqa',
+        qa: '/etlRoute',
         prod: '/etlRoute'
     },
     multipleRecordsUrl: {
         devLocal: '/etlRoutes',
         devAws: '/event',
-        qa: '/etlRoutesqa',
+        qa: '/etlRoute',
         prod: '/etlRoutes'
     },
     defualtPartitionKey: {
