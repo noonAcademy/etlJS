@@ -28,5 +28,11 @@ module.exports = {
         devAws: 'test_pk',
         qa: 'test_pk',
         prod: 'test_pk'
+    },
+    source: {
+        devLocal: 'web',
+        devAws: 'web',
+        qa: 'web',
+        prod: 'web'
     }
 }

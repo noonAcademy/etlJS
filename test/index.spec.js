@@ -8,6 +8,7 @@ const baseURLObject = require('../constants/SynchronousPostConstants').baseURL
 const singleRecordUrlObject = require('../constants/SynchronousPostConstants').singleRecordUrl
 const multipleRecordsUrlObject = require('../constants/SynchronousPostConstants').multipleRecordsUrl
 const defualtPartitionKeyObject = require('../constants/SynchronousPostConstants').defualtPartitionKey
+const defaultSourceObject = require('../constants/SynchronousPostConstants').source
 
 chai.expect();
 
@@ -133,7 +134,7 @@ describe('Given an instance of my SynchronousPost library', () => {
   describe('when I add default parameters', () => {
     it('should return data with default parameters', () => {
       expect(myInstance.addDefaultParameters).to.be.a('function');
-      // expect(myInstance.addDefaultParameters()).to.be.an('object').that.deep.include({'partition_key': defualtPartitionKeyObject.devLocal});
+      expect(myInstance.addDefaultParameters()).to.be.an('object').that.deep.include({'source': defaultSourceObject.devLocal});
     });
   });
 });

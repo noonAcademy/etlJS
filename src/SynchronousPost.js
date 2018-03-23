@@ -6,6 +6,7 @@ const baseUrlObject = require('../constants/SynchronousPostConstants').baseURL
 const singleRecordUrlObject = require('../constants/SynchronousPostConstants').singleRecordUrl
 const multipleRecordsUrlObject = require('../constants/SynchronousPostConstants').multipleRecordsUrl
 const defualtPartitionKeyObject = require('../constants/SynchronousPostConstants').defualtPartitionKey
+const defaultSourceObject = require('../constants/SynchronousPostConstants').source
 
 export default class SynchronousPost {
   constructor(env) {
@@ -44,12 +45,12 @@ export default class SynchronousPost {
   }
   addDefaultParameters(postData) {
     let returnData = Object.assign({}, postData)
-    let myFunc, myDateDefault
-    // myFunc = R.propOr(this.getdefualtPartitionKey(), 'partition_key')
+    let mySourceDefault, myDateDefault
+    mySourceDefault = R.propOr(this.getDefaultSource(), 'source')
     myDateDefault = R.propOr(new Date(), 'timestamp')
-    // returnData.partition_key = myFunc(returnData)
     try {
       returnData.timestamp = myDateDefault(returnData)
+      returnData.source = mySourceDefault(returnData)
     } catch (error) {
       
     }
@@ -113,5 +114,8 @@ export default class SynchronousPost {
   }
   getdefualtPartitionKey() {
     return defualtPartitionKeyObject[this._env]
+  }
+  getDefaultSource() {
+    return defaultSourceObject[this._env]
   }
 }
