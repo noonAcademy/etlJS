@@ -43,6 +43,7 @@ export default class SynchronousPost {
   removeDataFromStore(value) {
     store.remove(value)
   }
+
   postData(url, myData) {
     // Send a POST request
     let postData = { etlData: [] }
@@ -61,4 +62,5 @@ export default class SynchronousPost {
         this.getAndStoreDataToStore(etlStoreDataConstant, postData.etlData)
       })
   }
+  
 }
